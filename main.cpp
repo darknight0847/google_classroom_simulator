@@ -195,6 +195,50 @@ bool userexists(string name, string email, string pass, string role)
     return false;
 }
 
+bool check_email(string email)
+{
+    // mail check karava mate
+    if (email.size() >= 10 && email.substr(email.size() - 10) == "@gmail.com")
+        return true;
+    else
+        return false;
+}
+
+void signup(string role)
+{
+    // navu account banavava
+    string user, email, pass;
+
+    cout << "Enter Name: ";
+    getline(cin, user);
+    do
+    {
+        cout << "Enter Email: ";
+        getline(cin, email);
+        if (!check_email(email))
+            cout << "Invalid Email! Try again.\n";
+      // jya sudhi sacho email no type kare tya sudhi loop chalavi      
+    } while (!check_email(email)); 
+    cout << "Enter Pass: ";
+    getline(cin, pass);
+
+    if (role == "Student" && !userexists(user, email, pass, role))
+    {
+        student s(user, email, pass);
+        s.save();
+        cout << "Student Reg Done!\n";
+    }
+    else if (role == "Teacher" && !userexists(user, email, pass, role))
+    {
+        teacher t(user, email, pass);
+        t.save();
+        cout << "Teacher Reg Done!\n";
+    }
+    else
+    {
+        cout << "User already exists!\n";
+    }
+}
 int main()
 {
     cout << "=== Google Classroom Simulator ===\n";
