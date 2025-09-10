@@ -6,6 +6,83 @@
 
 using namespace std;
 
+
+class student {
+    string name;
+    string email;
+    string password;
+    string role;
+
+public:
+    student(string sname, string semail, string spass) {
+        setname(sname); // sname => student nu name
+        setemail(semail);
+        setpassword(spass);
+        setrole("Student");
+    }
+
+    string getname() { return name; }
+    string getemail() { return email; }
+    string getrole() { return role; }
+
+    void setname(string n) { name = n; }
+    void setemail(string e) { email = e; }
+    void setpassword(string p) { password = p; }
+    void setrole(string r) { role = r; }
+
+    void save() {
+        ofstream file("student_data.txt", ios::app);
+        file << name << "|" << email << "|" << password << "|" << role << "\n";
+        file.close();
+    }
+
+    void display() {
+        cout << "\n===== " << role << " Dashboard =====\n";
+        cout << "Welcome, " << name << "\n";
+        cout << "Role: " << role << "\n";
+        cout << "=============================\n";
+    }
+};
+
+
+class teacher {
+    string name;
+    string email;
+    string password;
+    string role;
+
+public:
+    teacher(string tname, string temail, string tpass) {
+        setname(tname); // tname => teacher nu name
+        setemail(temail);
+        setpassword(tpass);
+        setrole("Teacher");
+    }
+
+    string getname() { return name; }
+    string getemail() { return email; }
+    string getrole() { return role; }
+
+    void setname(string n) { name = n; }
+    void setemail(string e) { email = e; }
+    void setpassword(string p) { password = p; }
+    void setrole(string r) { role = r; }
+
+    void save() {
+        ofstream file("teacher_data.txt", ios::app);
+        file << name << "|" << email << "|" << password << "|" << role << "\n";
+        file.close();
+    }
+
+    void display() {
+        cout << "\n===== " << role << " Dashboard =====\n";
+        cout << "Welcome, " << name << "\n";
+        cout << "Role: " << role << "\n";
+        cout << "=============================\n";
+    }
+};
+
+
 class classroom
 {
     string classid;  // class ni id store karava random ganarate thase
@@ -80,6 +157,43 @@ public:
         return "C" + to_string(count);
     }
 };
+
+bool userexists(string name, string email, string pass, string role)
+{
+    // sinup karata time ae pele thi sinup karel che ke kem ae jova
+    string filename;
+    if (role == "Student")
+        filename = "student_data.txt";
+    else if (role == "Teacher")
+        filename = "teacher_data.txt";
+    else
+        return false;
+
+    ifstream file(filename);
+    if (!file.is_open())
+        return false;
+
+    string line;
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        string u, e, p, r; // username, email, password,role
+
+        getline(ss, u, '|');
+        getline(ss, e, '|');
+        getline(ss, p, '|');
+        getline(ss, r, '|');
+
+        if (u == name && e == email && r == role && p == pass)
+        {
+            file.close();
+            return true;
+        }
+    }
+
+    file.close();
+    return false;
+}
 
 int main()
 {
