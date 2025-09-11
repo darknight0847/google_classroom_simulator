@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 class student {
     string name;
     string email;
@@ -195,6 +194,136 @@ bool userexists(string name, string email, string pass, string role)
     return false;
 }
 
+bool check_email(string email)
+{
+    // mail check karava mate
+    if (email.size() >= 10 && email.substr(email.size() - 10) == "@gmail.com")
+        return true;
+    else
+        return false;
+}
+
+void signup(string role)
+{
+    // navu account banavava
+    string user, email, pass;
+
+    cout << "Enter Name: ";
+    getline(cin, user);
+    do
+    {
+        cout << "Enter Email: ";
+        getline(cin, email);
+        if (!check_email(email))
+            cout << "Invalid Email! Try again.\n";
+      // jya sudhi sacho email no type kare tya sudhi loop chalavi      
+    } while (!check_email(email)); 
+    cout << "Enter Pass: ";
+    getline(cin, pass);
+
+    if (role == "Student" && !userexists(user, email, pass, role))
+    {
+        student s(user, email, pass);
+        s.save();
+        cout << "Student Reg Done!\n";
+    }
+    else if (role == "Teacher" && !userexists(user, email, pass, role))
+    {
+        teacher t(user, email, pass);
+        t.save();
+        cout << "Teacher Reg Done!\n";
+    }
+    else
+    {
+        cout << "User already exists!\n";
+    }
+}
+bool login(string role)
+{
+    string user, email, pass;
+    bool ok = false;
+
+    cout << "Enter Name: ";
+    getline(cin, user);
+
+    cout << "Enter Email: ";
+    getline(cin, email);
+    if (!check_email(email)) {
+        cout << "Invalid Email! Returning to auth menu.\n";
+        return false; // sign up par pachu javu and jovu
+    }
+
+    cout << "Enter Pass: ";
+    getline(cin, pass);
+
+    string filename;
+    if (role == "Student")
+        filename = "student_data.txt";
+    else
+        filename = "teacher_data.txt";
+
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "No User Found!\n";
+        return false; // user no madyu
+    }
+
+    string line;
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        string u, e, p, r; // username, email, password,role
+
+        getline(ss, u, '|');
+        getline(ss, e, '|');
+        getline(ss, p, '|');
+        getline(ss, r, '|');
+
+        if (u == user && e == email && p == pass && r == "Student")
+        {
+            ok = true;
+            student s(u, e, p);
+            cout << "Login OK!\n";
+            s.display();
+
+            // student classroom ma jodase
+            classroom::show_classrooms();
+            cout << "Enter classroom id to join: ";
+            string cid;
+            getline(cin, cid);
+            classroom c(cid, "unknown", "unknown"); // temp object
+            c.add_student(u, e);
+            cout << "Joined classroom: " << cid << "\n";
+            break;
+        }
+        else if (u == user && e == email && p == pass && r == "Teacher")
+        {
+            ok = true;
+            teacher t(u, e, p);
+            cout << "Login OK!\n";
+            t.display();
+
+            // teacher classroom banavase
+            cout << "Enter new classroom name: ";
+            string cname;
+            getline(cin, cname);
+            string cid = classroom::generate_classid();
+            classroom c(cid, cname, e);
+            c.save();
+            cout << "Classroom created with ID: " << cid << "\n";
+            break;
+        }
+    }
+    file.close();
+
+    if (!ok)
+    {
+        cout << "No User Found!\n";
+        return false; // menu par pachu javu
+    }
+
+    return true; 
+}
 int main()
 {
     cout << "=== Google Classroom Simulator ===\n";
