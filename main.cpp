@@ -6,78 +6,101 @@
 
 using namespace std;
 
-
 class student {
-    string name;
-    string email;
-    string password;
-    string role;
+    string *name;
+    string *email;
+    string *password;
+    string *role;
 
 public:
     student(string sname, string semail, string spass) {
+        name = new string;
+        email = new string;
+        password = new string;
+        role = new string;
+
         setname(sname); // sname => student nu name
         setemail(semail);
         setpassword(spass);
         setrole("Student");
     }
 
-    string getname() { return name; }
-    string getemail() { return email; }
-    string getrole() { return role; }
+    ~student() {
+        delete name;
+        delete email;
+        delete password;
+        delete role;
+    }
 
-    void setname(string n) { name = n; }
-    void setemail(string e) { email = e; }
-    void setpassword(string p) { password = p; }
-    void setrole(string r) { role = r; }
+    string getname() { return *name; }
+    string getemail() { return *email; }
+    string getrole() { return *role; }
+
+    void setname(string n) { *name = n; }
+    void setemail(string e) { *email = e; }
+    void setpassword(string p) { *password = p; }
+    void setrole(string r) { *role = r; }
 
     void save() {
         ofstream file("student_data.txt", ios::app);
-        file << name << "|" << email << "|" << password << "|" << role << "\n";
+        file << *name << "|" << *email << "|" << *password << "|" << *role << "\n";
         file.close();
     }
 
     void display() {
-        cout << "\n===== " << role << " Dashboard =====\n";
-        cout << "Welcome, " << name << "\n";
-        cout << "Role: " << role << "\n";
+        cout << "\n===== " << *role << " Dashboard =====\n";
+        cout << "Welcome, " << *name << "\n";
+        cout << "Role: " << *role << "\n";
         cout << "=============================\n";
     }
 };
 
 
 class teacher {
-    string name;
-    string email;
-    string password;
-    string role;
+    string *name;
+    string *email;
+    string *password;
+    string *role;
 
 public:
     teacher(string tname, string temail, string tpass) {
+        name = new string;
+        email = new string;
+        password = new string;
+        role = new string;
+
         setname(tname); // tname => teacher nu name
         setemail(temail);
         setpassword(tpass);
         setrole("Teacher");
     }
 
-    string getname() { return name; }
-    string getemail() { return email; }
-    string getrole() { return role; }
+    ~teacher() {
+        delete name;
+        delete email;
+        delete password;
+        delete role;
+    }
 
-    void setname(string n) { name = n; }
-    void setemail(string e) { email = e; }
-    void setpassword(string p) { password = p; }
-    void setrole(string r) { role = r; }
+    string getname() { return *name; }
+    string getemail() { return *email; }
+    string getrole() { return *role; }
+
+    void setname(string n) { *name = n; }
+    void setemail(string e) { *email = e; }
+    void setpassword(string p) { *password = p; }
+    void setrole(string r) { *role = r; }
 
     void save() {
         ofstream file("teacher_data.txt", ios::app);
-        file << name << "|" << email << "|" << password << "|" << role << "\n";
+        file << *name << "|" << *email << "|" << *password << "|" << *role << "\n";
         file.close();
     }
 
     void display() {
-        cout << "\n===== " << role << " Dashboard =====\n";
-        cout << "Welcome, " << name << "\n";
-        cout << "Role: " << role << "\n";
+        cout << "\n===== " << *role << " Dashboard =====\n";
+        cout << "Welcome, " << *name << "\n";
+        cout << "Role: " << *role << "\n";
         cout << "=============================\n";
     }
 };
@@ -85,24 +108,35 @@ public:
 
 class classroom
 {
-    string classid;  // class ni id store karava random ganarate thase
-    string classname; // class nu name
-    string teacher_email; // teacher nu email je class banavase
+    string *classid;  // class ni id store karava random ganarate thase
+    string *classname; // class nu name
+    string *teacher_email; // teacher nu email je class banavase
     vector<pair<string, string>> students; // students nu {name, email} je join karase
 
 public:
-    classroom() {}
+    classroom() {
+        classid = new string;
+        classname = new string;
+        teacher_email = new string;
+    }
+
     classroom(string cid, string cname, string temail)
     {
-        classid = cid;
-        classname = cname;
-        teacher_email = temail;
+        classid = new string(cid);
+        classname = new string(cname);
+        teacher_email = new string(temail);
+    }
+
+    ~classroom() {
+        delete classid;
+        delete classname;
+        delete teacher_email;
     }
 
     void save()
     {
         ofstream file("classroom_data.txt", ios::app);
-        file << classid << "|" << classname << "|" << teacher_email << "\n";
+        file << *classid << "|" << *classname << "|" << *teacher_email << "\n";
         file.close();
     }
 
@@ -110,13 +144,13 @@ public:
     {
         students.push_back({sname, semail});
         ofstream file("classroom_students.txt", ios::app);
-        file << classid << "|" << sname << "|" << semail << "\n";
+        file << *classid << "|" << sname << "|" << semail << "\n";
         file.close();
     }
 
     void show_students()
     {
-        cout << "\n=== students in classroom " << classname << " (" << classid << ") ===\n";
+        cout << "\n=== students in classroom " << *classname << " (" << *classid << ") ===\n";
         for (auto &s : students)
         {
             cout << "name: " << s.first << " | email: " << s.second << "\n";
@@ -157,6 +191,7 @@ public:
         return "C" + to_string(count);
     }
 };
+
 
 bool userexists(string name, string email, string pass, string role)
 {
@@ -239,6 +274,92 @@ void signup(string role)
         cout << "User already exists!\n";
     }
 }
+bool login(string role)
+{
+    string user, email, pass;
+    bool ok = false;
+
+    cout << "Enter Name: ";
+    getline(cin, user);
+
+    cout << "Enter Email: ";
+    getline(cin, email);
+    if (!check_email(email)) {
+        cout << "Invalid Email! Returning to auth menu.\n";
+        return false; // sign up par pachu javu and jovu
+    }
+
+    cout << "Enter Pass: ";
+    getline(cin, pass);
+
+    string filename;
+    if (role == "Student")
+        filename = "student_data.txt";
+    else
+        filename = "teacher_data.txt";
+
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "No User Found!\n";
+        return false; // user no madyu
+    }
+
+    string line;
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+        string u, e, p, r; // username, email, password,role
+
+        getline(ss, u, '|');
+        getline(ss, e, '|');
+        getline(ss, p, '|');
+        getline(ss, r, '|');
+
+        if (u == user && e == email && p == pass && r == "Student")
+        {
+            ok = true;
+            student s(u, e, p);
+            cout << "Login OK!\n";
+            s.display();
+
+            // student classroom ma jodase
+            classroom::show_classrooms();
+            cout << "Enter classroom id to join: ";
+            string cid;
+            getline(cin, cid);
+            classroom c(cid, "unknown", "unknown"); // temp object
+            c.add_student(u, e);
+            cout << "Joined classroom: " << cid << "\n";
+            break;
+        }
+        else if (u == user && e == email && p == pass && r == "Teacher")
+        {
+            ok = true;
+            teacher t(u, e, p);
+            cout << "Login OK!\n";
+            t.display();
+
+            // teacher classroom banavase
+            cout << "Enter new classroom name: ";
+            string cname;
+            getline(cin, cname);
+            string cid = classroom::generate_classid();
+            classroom c(cid, cname, e);
+            c.save();
+            cout << "Classroom created with ID: " << cid << "\n";
+            break;
+        }
+    }
+    file.close();
+
+    if (!ok)
+    {
+        cout << "No User Found!\n";
+        return false; // menu par pachu javu
+    }
+
+    return true; 
+}
 int main()
 {
     cout << "=== Google Classroom Simulator ===\n";
@@ -247,7 +368,7 @@ int main()
         string role_choice;
         do
         {
-            cout << "Who are you?\n1. Student\n2. Teacher\nChoice: ";
+            cout << "1. Student\n2. Teacher\nChoice: ";
             getline(cin, role_choice);
             if (role_choice != "1" && role_choice != "2")
                 cout << "Wrong Input!\n";
