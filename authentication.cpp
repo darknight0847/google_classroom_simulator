@@ -69,12 +69,14 @@ void signup(string role)
     {
         student s(user, email, pass);
         s.save();
+        show_student(s);
         cout << "Student Registration Done!\n";
     }
     else if (role == "Teacher" && !userexists(user, email, pass, role))
     {
         teacher t(user, email, pass);
         t.save();
+        show_teacher(t);
         cout << "Teacher Registration Done!\n";
     }
     else
@@ -131,6 +133,7 @@ bool login(string role)
             ok = true;
             student s(u, e, p);
             cout << "Login OK!\n";
+            show_student(s);
             s.display();
             student_menu(s);
         }
@@ -139,6 +142,7 @@ bool login(string role)
             ok = true;
             teacher t(u, e, p);
             cout << "Login OK!\n";
+            show_teacher(t);
             t.display();
             teacher_menu(t);
         }
