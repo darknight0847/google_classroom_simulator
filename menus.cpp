@@ -21,6 +21,7 @@ void student_menu(student &s)
             getline(cin, cid);
             classroom c(cid, "unknown", "unknown");
             c.add_student(s.getname(), s.getemail());
+            show_classroom(c);
             cout << "Joined classroom: " << cid << "\n";
         }
         else if (choice == "2")
@@ -107,6 +108,7 @@ void student_menu(student &s)
 
             submission sub(aid, found_classid, s.getname(), s.getemail(), content);
             sub.save();
+            show_submission(sub);
             cout << "Submission Done for Assignment " << aid << " (Class " << found_classid << ")\n";
         }
         else if (choice == "3")
@@ -188,6 +190,7 @@ void teacher_menu(teacher &t)
             string aid = assignment::generate_assignment_id();
             assignment a(aid, title, desc, due, t.getemail(), cid);
             a.save();
+            show_assignment(a);
             cout << "Assignment Posted with ID: " << aid << " for Classroom " << cid << "\n";
         }
         else if (choice == "3")
