@@ -15,14 +15,44 @@ void student_menu(student &s)
 
         if (choice == "1")
         {
+            // Check if any classrooms exist
+            ifstream file("classroom_data.txt");
+            vector<pair<string, string>> class_teacher_list;
+            string line;
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string cid, cname, temail;
+                getline(ss, cid, '|');
+                getline(ss, cname, '|');
+                getline(ss, temail, '|');
+                if (!cid.empty())
+                    class_teacher_list.push_back({cid, temail});
+            }
+            file.close();
+            if (class_teacher_list.empty()) {
+                cout << "No classrooms available to join.\n";
+                continue;
+            }
             classroom::show_classrooms();
             cout << "Enter classroom id to join: ";
             string cid;
             getline(cin, cid);
-            classroom c(cid, "unknown", "unknown");
+            // Find teacher name for this class
+            string teacher_email = "";
+            for (auto &ct : class_teacher_list) {
+                if (ct.first == cid) {
+                    teacher_email = ct.second;
+                    break;
+                }
+            }
+            if (teacher_email == "") {
+                cout << "Classroom ID not found.\n";
+                continue;
+            }
+            classroom c(cid, "unknown", teacher_email);
             c.add_student(s.getname(), s.getemail());
             show_classroom(c);
-            cout << "Joined classroom: " << cid << "\n";
+            cout << "Joined classroom: " << cid << " | Teacher: " << teacher_email << "\n";
         }
         else if (choice == "2")
         {
@@ -135,6 +165,28 @@ void student_menu(student &s)
             {
                 assignment::show_assignments(cid);
             }
+
+            // Show student's submissions with grade and feedback
+            ifstream subfile("submissions.txt");
+            cout << "\n=== Your Submissions, Grades, and Feedback ===\n";
+            while (getline(subfile, line)) {
+                stringstream ss(line);
+                string aid, classid, sname, semail, content, grade, feedback;
+                getline(ss, aid, '|');
+                getline(ss, classid, '|');
+                getline(ss, sname, '|');
+                getline(ss, semail, '|');
+                getline(ss, content, '|');
+                getline(ss, grade, '|');
+                getline(ss, feedback, '|');
+                if (semail == s.getemail()) {
+                    cout << "Assignment: " << aid << " | Class: " << classid << "\n";
+                    cout << "Content: " << content << "\n";
+                    cout << "Grade: " << grade << "\n";
+                    cout << "Feedback: " << feedback << "\n\n";
+                }
+            }
+            subfile.close();
         }
         else if (choice == "4")
         {
@@ -153,15 +205,16 @@ void teacher_menu(teacher &t)
     while (true)
     {
         cout << "\n=== Teacher Menu ===\n";
-        cout << "1. Create a Classroom\n";
-        cout << "2. Post an Assignment\n";
-        cout << "3. View Submissions\n";
-        cout << "4. Logout\n";
+    cout << "1. Create a Classroom\n";
+    cout << "2. Post an Assignment\n";
+    cout << "3. View Submissions\n";
+    cout << "4. Assign Grade and Feedback\n";
+    cout << "5. Logout\n";
         cout << "Choice: ";
         string choice;
         getline(cin, choice);
 
-        if (choice == "1")
+    if (choice == "1")
         {
             cout << "Enter new classroom name: ";
             string cname;
@@ -201,6 +254,47 @@ void teacher_menu(teacher &t)
             submission::show_submissions(aid);
         }
         else if (choice == "4")
+        {
+            cout << "Enter Assignment ID: ";
+            string aid;
+            getline(cin, aid);
+            cout << "Enter Student Email: ";
+            string semail;
+            getline(cin, semail);
+            // Check if submission exists
+            bool found = false;
+            ifstream file("submissions.txt");
+            string line;
+            while (getline(file, line)) {
+                stringstream ss(line);
+                string id, classid, sname, email, content, old_grade, old_feedback;
+                getline(ss, id, '|');
+                getline(ss, classid, '|');
+                getline(ss, sname, '|');
+                getline(ss, email, '|');
+                getline(ss, content, '|');
+                getline(ss, old_grade, '|');
+                getline(ss, old_feedback, '|');
+                if (id == aid && email == semail) {
+                    found = true;
+                    break;
+                }
+            }
+            file.close();
+            if (!found) {
+                cout << "This student has not submitted this assignment. Cannot assign grade or feedback.\n";
+                continue;
+            }
+            cout << "Enter Grade: ";
+            string grade;
+            getline(cin, grade);
+            cout << "Enter Feedback: ";
+            string feedback;
+            getline(cin, feedback);
+            submission::assign_grade_and_feedback(aid, semail, grade, feedback);
+            cout << "Grade and feedback assigned.\n";
+        }
+        else if (choice == "5")
         {
             cout << "Logging out...\n";
             break;

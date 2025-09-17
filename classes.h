@@ -109,13 +109,21 @@ class submission
     string* student_name;
     string* student_email;
     string* content;
+    string* grade;
+    string* feedback;
 
 public:
-    submission(string aid, string cid, string sname, string semail, string scontent);
+    submission(string aid, string cid, string sname, string semail, string scontent, string sgrade = "", string sfeedback = "");
     ~submission();
 
     void save();
     static void show_submissions(string aid);
+
+    void set_grade(string g);
+    void set_feedback(string f);
+    string get_grade();
+    string get_feedback();
+    static void assign_grade_and_feedback(string aid, string semail, string grade, string feedback);
 
     friend void show_submission(const submission& s);
 };

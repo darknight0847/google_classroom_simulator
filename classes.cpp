@@ -253,13 +253,15 @@ string assignment::generate_assignment_id()
 
 // Submission class implementation
 
-submission::submission(string aid, string cid, string sname, string semail, string scontent)
+submission::submission(string aid, string cid, string sname, string semail, string scontent, string sgrade, string sfeedback)
 {
     assignment_id = new string(aid);
     class_id = new string(cid);
     student_name = new string(sname);
     student_email = new string(semail);
     content = new string(scontent);
+    grade = new string(sgrade);
+    feedback = new string(sfeedback);
 }
 
 submission::~submission() {
@@ -268,18 +270,21 @@ submission::~submission() {
     delete student_name;
     delete student_email;
     delete content;
+    delete grade;
+    delete feedback;
 }
 
 
 void submission::save()
 {
     ofstream file("submissions.txt", ios::app);
-    file << *assignment_id << "|" << *class_id << "|" << *student_name << "|" << *student_email << "|" << *content << "\n";
+    file << *assignment_id << "|" << *class_id << "|" << *student_name << "|" << *student_email << "|" << *content << "|" << *grade << "|" << *feedback << "\n";
     file.close();
 }
 
 void show_submission(const submission& s) {
     cout << "Submission by: " << *s.student_name << " | Assignment: " << *s.assignment_id << "\n";
+    cout << "Grade: " << *s.grade << " | Feedback: " << *s.feedback << "\n";
 }
 
 void submission::show_submissions(string aid)
@@ -290,19 +295,60 @@ void submission::show_submissions(string aid)
     while (getline(file, line))
     {
         stringstream ss(line);
-        string id, classid, sname, semail, scontent;
+        string id, classid, sname, semail, scontent, sgrade, sfeedback;
         getline(ss, id, '|');
         getline(ss, classid, '|');
         getline(ss, sname, '|');
         getline(ss, semail, '|');
         getline(ss, scontent, '|');
+        getline(ss, sgrade, '|');
+        getline(ss, sfeedback, '|');
 
         if (id == aid)
         {
             cout << "Class: " << classid << "\n";
             cout << "Student: " << sname << " (" << semail << ")\n";
-            cout << "Content: " << scontent << "\n\n";
+            cout << "Content: " << scontent << "\n";
+            cout << "Grade: " << sgrade << "\n";
+            cout << "Feedback: " << sfeedback << "\n\n";
         }
     }
     file.close();
+}
+
+void submission::set_grade(string g) { *grade = g; }
+void submission::set_feedback(string f) { *feedback = f; }
+string submission::get_grade() { return *grade; }
+string submission::get_feedback() { return *feedback; }
+
+void submission::assign_grade_and_feedback(string aid, string semail, string grade, string feedback) {
+    // Read all submissions, update the matching one, and rewrite the file
+    ifstream infile("submissions.txt");
+    vector<string> lines;
+    string line;
+    while (getline(infile, line)) {
+        stringstream ss(line);
+        string id, classid, sname, email, content, old_grade, old_feedback;
+        getline(ss, id, '|');
+        getline(ss, classid, '|');
+        getline(ss, sname, '|');
+        getline(ss, email, '|');
+        getline(ss, content, '|');
+        getline(ss, old_grade, '|');
+        getline(ss, old_feedback, '|');
+        if (id == aid && email == semail) {
+            // Update grade and feedback
+            ostringstream updated;
+            updated << id << "|" << classid << "|" << sname << "|" << email << "|" << content << "|" << grade << "|" << feedback;
+            lines.push_back(updated.str());
+        } else {
+            lines.push_back(line);
+        }
+    }
+    infile.close();
+    ofstream outfile("submissions.txt");
+    for (const auto& l : lines) {
+        outfile << l << "\n";
+    }
+    outfile.close();
 }
