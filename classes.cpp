@@ -10,6 +10,23 @@ student::student(string sname, string semail, string spass)
     role = new string("Student");
 }
 
+
+student::student(const student& other)
+{
+    name = new string(*other.name);
+    email = new string(*other.email);
+    password = new string(*other.password);
+    role = new string(*other.role);
+}
+
+student::student(string sname, int studentId)
+{
+    name = new string(sname);
+    email = new string(sname + to_string(studentId) + "@gmail.com");
+    password = new string("pass" + to_string(studentId));
+    role = new string("Student");
+}
+
 student::~student() {
     delete name;
     delete email;
@@ -55,6 +72,24 @@ teacher::teacher(string tname, string temail, string tpass)
     name = new string(tname);
     email = new string(temail);
     password = new string(tpass);
+    role = new string("Teacher");
+}
+
+
+teacher::teacher(const teacher& other)
+{
+    name = new string(*other.name);
+    email = new string(*other.email);
+    password = new string(*other.password);
+    role = new string(*other.role);
+}
+
+
+teacher::teacher(string tname, string department)
+{
+    name = new string(tname);
+    email = new string(tname + "." + department + "@gmail.com");
+    password = new string("pass" + department);
     role = new string("Teacher");
 }
 
@@ -195,6 +230,26 @@ assignment::assignment(string aid, string atitle, string adesc, string adue, str
     due_date = new string(adue);
     teacher_email = new string(temail);
     class_id = new string(cid);
+}
+
+assignment::assignment(const assignment& other)
+{
+    id = new string(*other.id);
+    title = new string(*other.title);
+    description = new string(*other.description);
+    due_date = new string(*other.due_date);
+    teacher_email = new string(*other.teacher_email);
+    class_id = new string(*other.class_id);
+}
+
+assignment::assignment(string aid, string atitle, int maxPoints)
+{
+    id = new string(aid);
+    title = new string(atitle);
+    description = new string("Maximum points: " + to_string(maxPoints));
+    due_date = new string("2025-12-31"); // Default end of year
+    teacher_email = new string("automated@gmail.com");
+    class_id = new string("AUTO");
 }
 
 assignment::~assignment() {

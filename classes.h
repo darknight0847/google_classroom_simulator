@@ -18,6 +18,8 @@ class student
 
 public:
     student(string sname = "Unknown", string semail = "unknown@gmail.com", string spass = "password");
+    student(const student& other); 
+    student(string sname, int studentId); 
     ~student();
 
     string getname();
@@ -44,6 +46,8 @@ class teacher
 
 public:
     teacher(string tname = "Unknown", string temail = "unknown@gmail.com", string tpass = "password");
+    teacher(const teacher& other); 
+    teacher(string tname, string department); 
     ~teacher();
 
     string getname();
@@ -93,6 +97,8 @@ class assignment
 
 public:
     assignment(string aid, string atitle, string adesc, string adue, string temail, string cid);
+    assignment(const assignment& other); 
+    assignment(string aid, string atitle, int maxPoints); 
     ~assignment();
 
     void save();
