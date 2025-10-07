@@ -35,6 +35,8 @@ public:
     void display();
 
     friend void show_student(const student& s);
+    bool operator==(const student& other) const;
+    friend ostream& operator<<(ostream& os, const student& s);
 };
 
 class teacher
@@ -63,6 +65,8 @@ public:
     void display();
 
     friend void show_teacher(const teacher& t);
+    bool operator==(const teacher& other) const;
+    friend ostream& operator<<(ostream& os, const teacher& t);
 };
 
 class classroom
@@ -84,6 +88,7 @@ public:
     static string generate_classid();
 
     friend void show_classroom(const classroom& c);
+    friend ostream& operator<<(ostream& os, const classroom& c);
 };
 
 class assignment
@@ -106,6 +111,8 @@ public:
     static string generate_assignment_id();
 
     friend void show_assignment(const assignment& a);
+    bool operator==(const assignment& other) const;
+    friend ostream& operator<<(ostream& os, const assignment& a);
 };
 
 class submission
@@ -132,6 +139,8 @@ public:
     static void assign_grade_and_feedback(string aid, string semail, string grade, string feedback);
 
     friend void show_submission(const submission& s);
+    bool operator==(const submission& other) const;
+    friend ostream& operator<<(ostream& os, const submission& s);
 };
 
 // Function declarations for authentication

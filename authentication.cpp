@@ -26,10 +26,22 @@ bool userexists(string name, string email, string pass, string role)
         getline(ss, p, '|');
         getline(ss, r, '|');
 
-        if (u == name && e == email && r == role && p == pass)
-        {
-            file.close();
-            return true;
+        if (role == "Student") {
+            student s1(name, email, pass);
+            student s2(u, e, p);
+            if (s1 == s2 && r == role)
+            {
+                file.close();
+                return true;
+            }
+        } else if (role == "Teacher") {
+            teacher t1(name, email, pass);
+            teacher t2(u, e, p);
+            if (t1 == t2 && r == role)
+            {
+                file.close();
+                return true;
+            }
         }
     }
 

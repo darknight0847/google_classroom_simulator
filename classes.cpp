@@ -1,5 +1,42 @@
 #include "classes.h"
 
+bool student::operator==(const student& other) const {
+    return *email == *other.email;
+}
+
+ostream& operator<<(ostream& os, const student& s) {
+    os << "Student: " << *s.name << " | Email: " << *s.email;
+    return os;
+}
+bool teacher::operator==(const teacher& other) const {
+    return *email == *other.email;
+}
+
+ostream& operator<<(ostream& os, const teacher& t) {
+    os << "Teacher: " << *t.name << " | Email: " << *t.email;
+    return os;
+}
+ostream& operator<<(ostream& os, const classroom& c) {
+    os << "Classroom: " << *c.classid << " | Name: " << *c.classname << " | Teacher: " << *c.teacher_email;
+    return os;
+}
+bool assignment::operator==(const assignment& other) const {
+    return *id == *other.id;
+}
+
+ostream& operator<<(ostream& os, const assignment& a) {
+    os << "Assignment: " << *a.id << " | Title: " << *a.title << " | Due: " << *a.due_date;
+    return os;
+}
+bool submission::operator==(const submission& other) const {
+    return *assignment_id == *other.assignment_id && *student_email == *other.student_email;
+}
+
+ostream& operator<<(ostream& os, const submission& s) {
+    os << "Submission by: " << *s.student_name << " | Assignment: " << *s.assignment_id << " | Grade: " << *s.grade << " | Feedback: " << *s.feedback;
+    return os;
+}
+
 // Student class implementation
 
 student::student(string sname, string semail, string spass)
