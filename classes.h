@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 using namespace std;
 
@@ -180,6 +181,36 @@ public:
     // Comparison and output
     bool operator==(const resource& other) const;
     friend ostream& operator<<(ostream& os, const resource& r);
+};
+
+// Announcement class for managing classroom announcements
+class announcement {
+private:
+    string* id;                 // Unique identifier for the announcement
+    string* title;             // Title of the announcement
+    string* content;           // Content of the announcement
+    string* teacher_email;     // Email of the teacher who made the announcement
+    string* class_id;          // ID of the classroom where announcement is made
+    string* date;              // Date when announcement was made
+    vector<pair<string, string>>* comments;  // Vector of student comments (student_email, comment)
+
+public:
+    // Constructors and destructor
+    announcement(string aid = "", string atitle = "", string acontent = "", string temail = "", string cid = "");
+    announcement(const announcement& other);
+    ~announcement();
+
+    // Member functions
+    void save();
+    void add_comment(string student_email, string comment);
+    static void show_announcements(string class_id);
+    static void show_announcement_comments(string announcement_id);
+    static string generate_announcement_id();
+
+    // Operator overloading and friend functions
+    friend void show_announcement(const announcement& a);
+    bool operator==(const announcement& other) const;
+    friend ostream& operator<<(ostream& os, const announcement& a);
 };
 
 // Function declarations for menus
