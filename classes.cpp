@@ -413,7 +413,113 @@ void submission::set_feedback(string f) { *feedback = f; }
 string submission::get_grade() { return *grade; }
 string submission::get_feedback() { return *feedback; }
 
-void submission::assign_grade_and_feedback(string aid, string semail, string grade, string feedback) {
+void submission::assign_grade_and_feedback(string aid, string semail, string grade, string feedback) {/* Lines 417-446 omitted */}
+
+// Resource class implementation
+resource::resource(string name, string desc, string date, string owner, string type) 
+{
+    this->name = name;
+    this->description = desc;
+    this->upload_date = date;
+    this->owner = owner;
+    this->type = type;
+}
+
+resource::resource(const resource& other) 
+{
+    // Copy all members
+    name = other.name;
+    description = other.description;
+    upload_date = other.upload_date;
+    owner = other.owner;
+    type = other.type;
+}
+
+resource& resource::operator=(const resource& other) 
+{
+    // Handle self-assignment
+    if (this == &other) {
+        return *this;
+    }
+    
+    // Copy all members
+    name = other.name;
+    description = other.description;
+    upload_date = other.upload_date;
+    owner = other.owner;
+    type = other.type;
+    
+    return *this;
+}
+
+resource::resource(resource&& other) noexcept 
+{
+    // Move all members
+    name = std::move(other.name);
+    description = std::move(other.description);
+    upload_date = std::move(other.upload_date);
+    owner = std::move(other.owner);
+    type = std::move(other.type);
+}
+
+resource& resource::operator=(resource&& other) noexcept 
+{
+    // Handle self-assignment
+    if (this == &other) {
+        return *this;
+    }
+    
+    // Move all members
+    name = std::move(other.name);
+    description = std::move(other.description);
+    upload_date = std::move(other.upload_date);
+    owner = std::move(other.owner);
+    type = std::move(other.type);
+    
+    return *this;
+}
+
+void resource::save() 
+{
+    // Open file in append mode
+    ofstream file("resources.txt", ios::app);
+    
+    // Write resource data with pipe separator
+    file << name << "|" 
+         << description << "|" 
+         << upload_date << "|" 
+         << owner << "|" 
+         << type << "\n";
+    
+    file.close();
+}
+
+void resource::display() const 
+{
+    // Display resource information in a formatted way
+    cout << "\n=== Resource Details ===\n";
+    cout << "Name: " << name << "\n";
+    cout << "Type: " << type << "\n";
+    cout << "Description: " << description << "\n";
+    cout << "Uploaded on: " << upload_date << "\n";
+    cout << "Owner: " << owner << "\n";
+    cout << "=====================\n";
+}
+
+bool resource::operator==(const resource& other) const 
+{
+    // Resources are considered equal if they have the same name and owner
+    return (name == other.name && owner == other.owner);
+}
+
+ostream& operator<<(ostream& os, const resource& r) 
+{
+    // Format: Resource: name | Type: type | Owner: owner
+    os << "Resource: " << r.name 
+       << " | Type: " << r.type 
+       << " | Owner: " << r.owner;
+    return os;
+}
     // Read all submissions, update the matching one, and rewrite the file
     ifstream infile("submissions.txt");
     vector<string> lines;
