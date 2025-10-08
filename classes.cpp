@@ -413,7 +413,37 @@ void submission::set_feedback(string f) { *feedback = f; }
 string submission::get_grade() { return *grade; }
 string submission::get_feedback() { return *feedback; }
 
-void submission::assign_grade_and_feedback(string aid, string semail, string grade, string feedback) {/* Lines 417-446 omitted */}
+void submission::assign_grade_and_feedback(string aid, string semail, string grade, string feedback) {
+    // Read all submissions, update the matching one, and rewrite the file
+    ifstream infile("submissions.txt");
+    vector<string> lines;
+    string line;
+    while (getline(infile, line)) {
+        stringstream ss(line);
+        string id, classid, sname, email, content, old_grade, old_feedback;
+        getline(ss, id, '|');
+        getline(ss, classid, '|');
+        getline(ss, sname, '|');
+        getline(ss, email, '|');
+        getline(ss, content, '|');
+        getline(ss, old_grade, '|');
+        getline(ss, old_feedback, '|');
+        if (id == aid && email == semail) {
+            // Update grade and feedback
+            ostringstream updated;
+            updated << id << "|" << classid << "|" << sname << "|" << email << "|" << content << "|" << grade << "|" << feedback;
+            lines.push_back(updated.str());
+        } else {
+            lines.push_back(line);
+        }
+    }
+    infile.close();
+    ofstream outfile("submissions.txt");
+    for (const auto& l : lines) {
+        outfile << l << "\n";
+    }
+    outfile.close();
+}
 
 // Resource class implementation
 resource::resource(string name, string desc, string date, string owner, string type) 
@@ -520,33 +550,4 @@ ostream& operator<<(ostream& os, const resource& r)
        << " | Owner: " << r.owner;
     return os;
 }
-    // Read all submissions, update the matching one, and rewrite the file
-    ifstream infile("submissions.txt");
-    vector<string> lines;
-    string line;
-    while (getline(infile, line)) {
-        stringstream ss(line);
-        string id, classid, sname, email, content, old_grade, old_feedback;
-        getline(ss, id, '|');
-        getline(ss, classid, '|');
-        getline(ss, sname, '|');
-        getline(ss, email, '|');
-        getline(ss, content, '|');
-        getline(ss, old_grade, '|');
-        getline(ss, old_feedback, '|');
-        if (id == aid && email == semail) {
-            // Update grade and feedback
-            ostringstream updated;
-            updated << id << "|" << classid << "|" << sname << "|" << email << "|" << content << "|" << grade << "|" << feedback;
-            lines.push_back(updated.str());
-        } else {
-            lines.push_back(line);
-        }
-    }
-    infile.close();
-    ofstream outfile("submissions.txt");
-    for (const auto& l : lines) {
-        outfile << l << "\n";
-    }
-    outfile.close();
-}
+    
