@@ -10,27 +10,47 @@
 
 using namespace std;
 
-class student
-{
+class User {
+protected:
     string* name;
     string* email;
     string* password;
     string* role;
+public:
+    User(string uname = "Unknown", string uemail = "unknown@gmail.com", string upass = "password", string urole = "User") {
+        name = new string(uname);
+        email = new string(uemail);
+        password = new string(upass);
+        role = new string(urole);
+    }
+    User(const User& other) {
+        name = new string(*other.name);
+        email = new string(*other.email);
+        password = new string(*other.password);
+        role = new string(*other.role);
+    }
+    virtual ~User() {
+        delete name;
+        delete email;
+        delete password;
+        delete role;
+    }
+    string getname() { return *name; }
+    string getemail() { return *email; }
+    string getrole() { return *role; }
+    void setname(string n) { *name = n; }
+    void setemail(string e) { *email = e; }
+    void setpassword(string p) { *password = p; }
+    void setrole(string r) { *role = r; }
+};
 
+class student : public User
+{
 public:
     student(string sname = "Unknown", string semail = "unknown@gmail.com", string spass = "password");
     student(const student& other); 
     student(string sname, int studentId); 
     ~student();
-
-    string getname();
-    string getemail();
-    string getrole();
-
-    void setname(string n);
-    void setemail(string e);
-    void setpassword(string p);
-    void setrole(string r);
 
     void save();
     void display();
@@ -40,27 +60,13 @@ public:
     friend ostream& operator<<(ostream& os, const student& s);
 };
 
-class teacher
+class teacher : public User
 {
-    string* name;
-    string* email;
-    string* password;
-    string* role;
-
 public:
     teacher(string tname = "Unknown", string temail = "unknown@gmail.com", string tpass = "password");
     teacher(const teacher& other); 
     teacher(string tname, string department); 
     ~teacher();
-
-    string getname();
-    string getemail();
-    string getrole();
-
-    void setname(string n);
-    void setemail(string e);
-    void setpassword(string p);
-    void setrole(string r);
 
     void save();
     void display();
