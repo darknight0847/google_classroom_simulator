@@ -150,38 +150,6 @@ bool check_email(string email);
 void signup(string role);
 bool login(string role);
 
-// Resource class for managing educational materials
-class resource
-{
-private:
-    string name;            // Name of the resource
-    string description;     // Detailed description
-    string upload_date;     // Date when resource was uploaded
-    string owner;          // Email of the resource owner
-    string type;           // File type (PDF, DOC, etc.)
-
-public:
-    // Constructors and destructor
-    resource() = default;
-    resource(string name, string desc, string date, string owner, string type);
-    ~resource() = default;
-
-    // Copy semantics
-    resource(const resource& other);
-    resource& operator=(const resource& other);
-
-    // Move semantics
-    resource(resource&& other) noexcept;
-    resource& operator=(resource&& other) noexcept;
-
-    // File operations
-    void save();
-    void display() const;
-
-    // Comparison and output
-    bool operator==(const resource& other) const;
-    friend ostream& operator<<(ostream& os, const resource& r);
-};
 
 // Announcement class for managing classroom announcements
 class announcement {

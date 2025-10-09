@@ -447,66 +447,6 @@ void show_submission(const submission& s)
     cout << "Submission by: " << *s.student_name << " for Assignment: " << *s.assignment_id << "\n";
 }
 
-// ==================== RESOURCE CLASS ====================
-resource::resource(string name, string desc, string date, string owner, string type)
-    : name(name), description(desc), upload_date(date), owner(owner), type(type) {}
-
-resource::resource(const resource& other)
-    : name(other.name), description(other.description), upload_date(other.upload_date),
-      owner(other.owner), type(other.type) {}
-
-resource& resource::operator=(const resource& other)
-{
-    if (this != &other)
-    {
-        name = other.name;
-        description = other.description;
-        upload_date = other.upload_date;
-        owner = other.owner;
-        type = other.type;
-    }
-    return *this;
-}
-
-resource::resource(resource&& other) noexcept
-    : name(move(other.name)), description(move(other.description)),
-      upload_date(move(other.upload_date)), owner(move(other.owner)), type(move(other.type)) {}
-
-resource& resource::operator=(resource&& other) noexcept
-{
-    if (this != &other)
-    {
-        name = move(other.name);
-        description = move(other.description);
-        upload_date = move(other.upload_date);
-        owner = move(other.owner);
-        type = move(other.type);
-    }
-    return *this;
-}
-
-void resource::save()
-{
-    ofstream file("resources.txt", ios::app);
-    file << name << "|" << description << "|" << upload_date << "|" << owner << "|" << type << "\n";
-    file.close();
-}
-
-void resource::display() const
-{
-    cout << "Resource: " << name << "\nDescription: " << description << "\nType: " << type << "\nOwner: " << owner << "\nDate: " << upload_date << "\n";
-}
-
-bool resource::operator==(const resource& other) const
-{
-    return name == other.name && owner == other.owner;
-}
-
-ostream& operator<<(ostream& os, const resource& r)
-{
-    os << "Resource: " << r.name << " | Type: " << r.type;
-    return os;
-}
 
 // ==================== ANNOUNCEMENT CLASS ====================
 announcement::announcement(string aid, string atitle, string acontent, string temail, string cid)
