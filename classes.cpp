@@ -2,45 +2,15 @@
 
 // ==================== STUDENT CLASS ====================
 student::student(string sname, string semail, string spass)
-{
-    name = new string(sname);
-    email = new string(semail);
-    password = new string(spass);
-    role = new string("Student");
-}
+    : User(sname, semail, spass, "Student") {}
 
 student::student(const student& other)
-{
-    name = new string(*other.name);
-    email = new string(*other.email);
-    password = new string(*other.password);
-    role = new string(*other.role);
-}
+    : User(other) {}
 
 student::student(string sname, int studentId)
-{
-    name = new string(sname);
-    email = new string("");
-    password = new string("");
-    role = new string("Student");
-}
+    : User(sname, "", "", "Student") {}
 
-student::~student()
-{
-    delete name;
-    delete email;
-    delete password;
-    delete role;
-}
-
-string student::getname() { return *name; }
-string student::getemail() { return *email; }
-string student::getrole() { return *role; }
-
-void student::setname(string n) { *name = n; }
-void student::setemail(string e) { *email = e; }
-void student::setpassword(string p) { *password = p; }
-void student::setrole(string r) { *role = r; }
+student::~student() {}
 
 void student::save()
 {
@@ -71,45 +41,15 @@ void show_student(const student& s)
 
 // ==================== TEACHER CLASS ====================
 teacher::teacher(string tname, string temail, string tpass)
-{
-    name = new string(tname);
-    email = new string(temail);
-    password = new string(tpass);
-    role = new string("Teacher");
-}
+    : User(tname, temail, tpass, "Teacher") {}
 
 teacher::teacher(const teacher& other)
-{
-    name = new string(*other.name);
-    email = new string(*other.email);
-    password = new string(*other.password);
-    role = new string(*other.role);
-}
+    : User(other) {}
 
 teacher::teacher(string tname, string department)
-{
-    name = new string(tname);
-    email = new string("");
-    password = new string("");
-    role = new string("Teacher");
-}
+    : User(tname, "", "", "Teacher") {}
 
-teacher::~teacher()
-{
-    delete name;
-    delete email;
-    delete password;
-    delete role;
-}
-
-string teacher::getname() { return *name; }
-string teacher::getemail() { return *email; }
-string teacher::getrole() { return *role; }
-
-void teacher::setname(string n) { *name = n; }
-void teacher::setemail(string e) { *email = e; }
-void teacher::setpassword(string p) { *password = p; }
-void teacher::setrole(string r) { *role = r; }
+teacher::~teacher() {}
 
 void teacher::save()
 {
