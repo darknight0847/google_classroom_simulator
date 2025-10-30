@@ -1,4 +1,5 @@
 #include "classes.h"
+#include <exception>
 
 bool userexists(string name, string email, string pass, string role)
 {
@@ -11,12 +12,13 @@ bool userexists(string name, string email, string pass, string role)
     else
         return false;
 
-    ifstream file(filename);
-    if (!file.is_open())
-        return false;
+    try {
+        ifstream file(filename);
+        if (!file.is_open())
+            return false;
 
-    string line;
-    while (getline(file, line))
+        string line;
+        while (getline(file, line))
     {
         stringstream ss(line);
         string u, e, p, r; // username, email, password, role
@@ -45,8 +47,13 @@ bool userexists(string name, string email, string pass, string role)
         }
     }
 
-    file.close();
-    return false;
+        file.close();
+        return false;
+    }
+    catch (const exception &e) {
+        cerr << "Error checking user existence: " << e.what() << "\n";
+        return false;
+    }
 }
 
 bool check_email(string email)
@@ -77,23 +84,28 @@ void signup(string role)
     cout << "Enter Pass: ";
     getline(cin, pass);
 
-    if (role == "Student" && !userexists(user, email, pass, role))
-    {
-        student s(user, email, pass);
-        s.save();
-        show_student(s);
-        cout << "Student Registration Done!\n";
+    try {
+        if (role == "Student" && !userexists(user, email, pass, role))
+        {
+            student s(user, email, pass);
+            s.save();
+            show_student(s);
+            cout << "Student Registration Done!\n";
+        }
+        else if (role == "Teacher" && !userexists(user, email, pass, role))
+        {
+            teacher t(user, email, pass);
+            t.save();
+            show_teacher(t);
+            cout << "Teacher Registration Done!\n";
+        }
+        else
+        {
+            cout << "User already exists!\n";
+        }
     }
-    else if (role == "Teacher" && !userexists(user, email, pass, role))
-    {
-        teacher t(user, email, pass);
-        t.save();
-        show_teacher(t);
-        cout << "Teacher Registration Done!\n";
-    }
-    else
-    {
-        cout << "User already exists!\n";
+    catch (const exception &e) {
+        cerr << "Error during signup: " << e.what() << "\n";
     }
 }
 
@@ -122,50 +134,56 @@ bool login(string role)
     else
         filename = "teacher_data.txt";
 
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cout << "No User Found!\n";
+    try {
+        ifstream file(filename);
+        if (!file.is_open())
+        {
+            cout << "No User Found!\n";
+            return false;
+        }
+
+        string line;
+        while (getline(file, line))
+        {
+            stringstream ss(line);
+            string u, e, p, r; // username, email, password, role
+
+            getline(ss, u, '|');
+            getline(ss, e, '|');
+            getline(ss, p, '|');
+            getline(ss, r, '|');
+
+            if (u == user && e == email && p == pass && r == "Student")
+            {
+                ok = true;
+                student s(u, e, p);
+                cout << "Login OK!\n";
+                show_student(s);
+                s.display();
+                student_menu(s);
+            }
+            else if (u == user && e == email && p == pass && r == "Teacher")
+            {
+                ok = true;
+                teacher t(u, e, p);
+                cout << "Login OK!\n";
+                show_teacher(t);
+                t.display();
+                teacher_menu(t);
+            }
+        }
+        file.close();
+
+        if (!ok)
+        {
+            cout << "No User Found!\n";
+            return false;
+        }
+
+        return true;
+    }
+    catch (const exception &e) {
+        cerr << "Error during login: " << e.what() << "\n";
         return false;
     }
-
-    string line;
-    while (getline(file, line))
-    {
-        stringstream ss(line);
-        string u, e, p, r; // username, email, password, role
-
-        getline(ss, u, '|');
-        getline(ss, e, '|');
-        getline(ss, p, '|');
-        getline(ss, r, '|');
-
-        if (u == user && e == email && p == pass && r == "Student")
-        {
-            ok = true;
-            student s(u, e, p);
-            cout << "Login OK!\n";
-            show_student(s);
-            s.display();
-            student_menu(s);
-        }
-        else if (u == user && e == email && p == pass && r == "Teacher")
-        {
-            ok = true;
-            teacher t(u, e, p);
-            cout << "Login OK!\n";
-            show_teacher(t);
-            t.display();
-            teacher_menu(t);
-        }
-    }
-    file.close();
-
-    if (!ok)
-    {
-        cout << "No User Found!\n";
-        return false;
-    }
-
-    return true;
 }

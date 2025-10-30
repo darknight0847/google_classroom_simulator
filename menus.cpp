@@ -1,9 +1,11 @@
 #include "classes.h"
+#include <exception>
 
 void student_menu(student &s)
 {
     while (true)
     {
+        try {
         cout << "\n=== Student Menu ===\n";
         cout << "1. Join a Classroom\n";
         cout << "2. Submit an Assignment\n";
@@ -273,6 +275,10 @@ void student_menu(student &s)
         {
             cout << "Invalid choice!\n";
         }
+        }
+        catch (const exception &e) {
+            cerr << "An error occurred in student menu: " << e.what() << "\n";
+        }
     }
 }
 
@@ -280,6 +286,7 @@ void teacher_menu(teacher &t)
 {
     while (true)
     {
+        try {
         cout << "\n=== Teacher Menu ===\n";
         cout << "1. Create a Classroom\n";
         cout << "2. Post an Assignment\n";
@@ -460,6 +467,10 @@ void teacher_menu(teacher &t)
         else
         {
             cout << "Invalid choice!\n";
+        }
+        }
+        catch (const exception &e) {
+            cerr << "An error occurred in teacher menu: " << e.what() << "\n";
         }
     }
 }

@@ -1,11 +1,13 @@
 #include "classes.h"
+#include <exception>
 
 int main()
 {
     cout << "=== Google Classroom Simulator ===\n";
 
-    while (true)
-    {
+    try {
+        while (true)
+        {
         string role_choice;
         do
         {
@@ -26,12 +28,17 @@ int main()
                 cout << "Wrong Input!\n";
         } while (auth_choice != "1" && auth_choice != "2");
 
-        if (auth_choice == "1")
-            signup(role);
-        else
-        {
-            login(role);
+            if (auth_choice == "1")
+                signup(role);
+            else
+            {
+                login(role);
+            }
         }
+    }
+    catch (const exception &e) {
+        cerr << "Unhandled exception in main: " << e.what() << "\n";
+        return 1;
     }
 
     return 0;
