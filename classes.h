@@ -6,7 +6,9 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include<ctime>
+#include <ctime>
+#include <exception>
+#include <new>
 
 using namespace std;
 
@@ -18,16 +20,26 @@ protected:
     string* role;
 public:
     User(string uname = "Unknown", string uemail = "unknown@gmail.com", string upass = "password", string urole = "User") {
-        name = new string(uname);
-        email = new string(uemail);
-        password = new string(upass);
-        role = new string(urole);
+        try {
+            name = new string(uname);
+            email = new string(uemail);
+            password = new string(upass);
+            role = new string(urole);
+        } catch (const bad_alloc &e) {
+            cerr << "Memory allocation failed in User constructor: " << e.what() << "\n";
+            throw;
+        }
     }
     User(const User& other) {
-        name = new string(*other.name);
-        email = new string(*other.email);
-        password = new string(*other.password);
-        role = new string(*other.role);
+        try {
+            name = new string(*other.name);
+            email = new string(*other.email);
+            password = new string(*other.password);
+            role = new string(*other.role);
+        } catch (const bad_alloc &e) {
+            cerr << "Memory allocation failed in User copy constructor: " << e.what() << "\n";
+            throw;
+        }
     }
     virtual ~User() {
         delete name;
